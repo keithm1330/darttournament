@@ -5,131 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>John Power Memorial Darts Tournament - Bracket</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Open+Sans:wght@400;600&display=swap');
 
   body {
-    font-family: 'Roboto', sans-serif;
-    background: #121812;
-    color: #eee;
-    margin: 20px;
+    font-family: 'Open Sans', sans-serif;
+    background: #f9f7f1;
+    color: #333333;
+    margin: 24px;
   }
 
   h1 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     text-align: center;
-    color: #d92f2f;
-    margin-bottom: 36px;
+    color: #b8322f; /* muted deep red */
+    margin-bottom: 48px;
     font-size: 2.8rem;
-    letter-spacing: 3px;
-    text-shadow: 0 0 6px #ff3b3b, 0 0 12px #d92f2f;
+    letter-spacing: 1.5px;
   }
 
   #bracket {
     display: flex;
     overflow-x: auto;
-    gap: 28px;
-    padding: 16px 24px 24px 24px;
-    scroll-behavior: smooth;
+    gap: 32px;
+    padding-bottom: 24px;
   }
 
   .round {
-    background: linear-gradient(135deg, #1a2a10 0%, #2c3e17 100%);
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 12px;
     padding: 24px 20px;
-    min-width: 300px;
+    min-width: 320px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow:
-      0 0 10px #0b2604,
-      inset 0 0 30px #4caf5080;
-    border: 2px solid #4caf50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1.5px solid #dcd7ca;
     flex-shrink: 0;
   }
 
   .round h4 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     text-align: center;
     font-weight: 700;
-    color: #ff3838;
-    margin-bottom: 26px;
-    font-size: 1.6rem;
-    letter-spacing: 2px;
-    text-shadow: 0 0 5px #ff3838cc;
+    color: #5a4631; /* warm dark brown */
+    margin-bottom: 32px;
+    font-size: 1.7rem;
+    letter-spacing: 1px;
   }
 
   .match {
-    background: #22331f;
-    border-radius: 6px;
-    padding: 18px 16px;
-    margin-bottom: 20px;
-    box-shadow: inset 0 0 10px #3d592e;
+    background: #f4f2ec;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
-    border: 1px solid #4caf50aa;
+    border: 1px solid #ddd8cd;
   }
 
   .game-number {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.1rem;
-    font-weight: 700;
-    color: #82ff82;
+    font-weight: 600;
+    color: #8c6d5a; /* muted brown */
     margin-bottom: 14px;
-    letter-spacing: 0.8px;
-    text-shadow: 0 0 4px #82ff82aa;
+    letter-spacing: 0.6px;
   }
 
   .players {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 24px;
   }
 
   .player {
-    background: #33502b;
-    padding: 12px 20px;
-    border-radius: 6px;
+    background: #e7e5df;
+    padding: 12px 22px;
+    border-radius: 10px;
     text-align: center;
     font-weight: 600;
     font-size: 1.15rem;
-    color: #c1e1c1;
+    color: #5a4631;
     user-select: none;
-    box-shadow: 0 0 6px #3fff3f66;
-    min-width: 140px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    min-width: 150px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    box-shadow: inset 0 0 6px rgba(90,70,49,0.15);
   }
 
   .player.winner {
-    background-color: #ff3838;
+    background-color: #b8322f;
     color: #fff;
     font-weight: 700;
-    box-shadow: 0 0 20px #ff3838cc;
+    box-shadow: 0 0 12px rgba(184,50,47,0.5);
   }
 
   .vs {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    color: #a4d65e;
+    color: #8c6d5a;
     user-select: none;
-    width: 30px;
+    width: 36px;
     text-align: center;
-    text-shadow: 0 0 3px #a4d65eaa;
   }
 
   .board-label {
-    margin-top: 12px;
+    margin-top: 10px;
     font-size: 0.95rem;
     font-style: italic;
-    color: #7fa879;
+    color: #7f6f60;
     text-align: center;
     user-select: none;
   }
 
   .marker-label {
-    margin-top: 8px;
+    margin-top: 6px;
     font-size: 0.95rem;
     font-style: italic;
-    color: #ff8c61;
+    color: #a46338; /* warm gold */
     text-align: center;
     user-select: none;
   }
@@ -142,47 +135,50 @@
   }
   #bracket::-webkit-scrollbar-thumb,
   .round::-webkit-scrollbar-thumb {
-    background: #82ff8266;
+    background: #cbb895;
     border-radius: 8px;
   }
   #bracket::-webkit-scrollbar-track,
   .round::-webkit-scrollbar-track {
-    background: #121812;
+    background: #f9f7f1;
   }
 
-  /* Responsive improvements */
+  /* Responsive tweaks */
   @media (max-width: 768px) {
     #bracket {
-      gap: 22px;
-      padding: 12px 20px 20px 20px;
+      gap: 24px;
+      padding-bottom: 18px;
     }
     .round {
-      min-width: 260px;
+      min-width: 280px;
       max-height: 75vh;
       padding: 20px 18px;
     }
     .match {
       padding: 16px 14px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .player {
-      font-size: 1rem;
-      padding: 11px 16px;
+      font-size: 1.05rem;
+      padding: 11px 18px;
       min-width: 130px;
-      box-shadow: 0 0 8px #44c34488;
+      box-shadow: inset 0 0 5px rgba(90,70,49,0.12);
     }
     .game-number {
       font-size: 1rem;
+    }
+    .vs {
+      width: 32px;
     }
   }
 
   @media (max-width: 480px) {
     #bracket {
       gap: 18px;
-      padding: 10px 16px 18px 16px;
+      padding-bottom: 16px;
     }
     .round {
-      min-width: 220px;
+      min-width: 240px;
       max-height: 70vh;
       padding: 16px 14px;
     }
@@ -194,7 +190,7 @@
       font-size: 0.95rem;
       padding: 10px 14px;
       min-width: 110px;
-      box-shadow: 0 0 6px #44c344aa;
+      box-shadow: inset 0 0 5px rgba(90,70,49,0.1);
     }
     .game-number {
       font-size: 0.9rem;
