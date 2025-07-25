@@ -6,16 +6,14 @@
   <title>John Power Memorial Darts Tournament - Bracket</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #f5f7fa;
-      color: #333333;
-      margin: 10px 15px 40px 15px;
+      color: #333;
+      padding: 20px;
     }
     h1 {
       text-align: center;
       color: #3aafa9;
-      margin-bottom: 25px;
-      font-size: 2rem;
     }
     .round {
       display: inline-block;
@@ -25,142 +23,125 @@
     }
     .round h4 {
       text-align: center;
-      font-weight: 600;
       color: #3aafa9;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .match {
       background: white;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 8px;
       padding: 10px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
     }
     .player {
-      padding: 8px;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      user-select: none;
-      color: #333;
+      padding: 6px 8px;
+      margin-bottom: 5px;
+      border-radius: 4px;
       background-color: #e8f6f5;
     }
     .winner {
       background-color: #3aafa9;
-      color: white;
-      font-weight: 700;
+      color: #fff;
+      font-weight: bold;
     }
-    .board-label, .marker-label {
+    .board-label,
+    .marker-label {
       font-size: 0.85rem;
       color: #666;
-      margin-top: 6px;
       font-style: italic;
-    }
-    @media (max-width: 768px) {
-      .round {
-        min-width: 180px;
-        margin-right: 10px;
-      }
-    }
-    @media (max-width: 480px) {
-      .round {
-        display: block;
-        min-width: auto;
-        margin-bottom: 20px;
-      }
     }
   </style>
 </head>
 <body>
 
 <h1>John Power Memorial Darts Tournament</h1>
-<div id="bracket"></div>
+<div id="bracket">Loading bracket...</div>
 
 <script>
-function getPlayerLabel(player, fallbackPrefix = "Winner of Game") {
-  if (!player) return "";
-  if (typeof player === "string") return player;
-  if (player.name && player.name.trim()) return player.name;
-  if (player.sourceMatchId) return `${fallbackPrefix} ${player.sourceMatchId}`;
-  return "";
-}
-
-function loadBracket() {
-  const data = localStorage.getItem("bracket");
-  return data ? JSON.parse(data) : null;
-}
-
-function getRoundName(rIndex, totalRounds) {
-  const last = totalRounds - 1;
-  if (rIndex === last) return "Final";
-  if (rIndex === last - 1) return "Semi Final";
-  if (rIndex === last - 2) return "Quarter Final";
-  if (rIndex === last - 3) return "Last 16";
-  return `Round ${rIndex + 1}`;
-}
-
-function render() {
-  const rounds = loadBracket();
-  if (!rounds) {
-    document.getElementById("bracket").textContent = "No bracket data found.";
-    return;
+  function getPlayerLabel(player) {
+    if (!player) return "TBD";
+    if (typeof player === "string") return player;
+    if (player.name) return player.name;
+    if (player.sourceMatchId !== undefined) return `Winner of Game ${player.sourceMatchId + 1}`;
+    return "TBD";
   }
 
-  const bracket = document.getElementById("bracket");
-  bracket.innerHTML = "";
+  function getRoundName(index, total) {
+    const last = total - 1;
+    if (index === last) return "Final";
+    if (index === last - 1) return "Semi Final";
+    if (index === last - 2) return "Quarter Final";
+    if (index === last - 3) return "Last 16";
+    return `Round ${index + 1}`;
+  }
 
-  rounds.forEach((round, rIndex) => {
-    const div = document.createElement("div");
-    div.className = "round";
+  function renderBracket(bracket) {
+    const container = document.getElementById("bracket");
+    container.innerHTML = "";
 
-    div.appendChild(Object.assign(document.createElement("h4"), {
-      textContent: getRoundName(rIndex, rounds.length),
-    }));
+    bracket.forEach((round, roundIndex) => {
+      const roundDiv = document.createElement("div");
+      roundDiv.className = "round";
 
-    round.forEach(match => {
-      const m = document.createElement("div");
-      m.className = "match";
+      const roundTitle = document.createElement("h4");
+      roundTitle.textContent = getRoundName(roundIndex, bracket.length);
+      roundDiv.appendChild(roundTitle);
 
-      const p1Label = getPlayerLabel(match.player1);
-      const p2Label = getPlayerLabel(match.player2);
-      const winner = match.winner;
+      round.forEach((match, matchIndex) => {
+        const matchDiv = document.createElement("div");
+        matchDiv.className = "match";
 
-      const p1 = document.createElement("div");
-      p1.textContent = p1Label || "TBD";
-      p1.className = "player";
-      if (winner === p1Label) p1.classList.add("winner");
-      m.appendChild(p1);
+        const p1Label = getPlayerLabel(match.player1);
+        const p2Label = getPlayerLabel(match.player2);
 
-      if (p2Label) {
-        const p2 = document.createElement("div");
-        p2.textContent = p2Label;
-        p2.className = "player";
-        if (winner === p2Label) p2.classList.add("winner");
-        m.appendChild(p2);
-      }
+        const p1El = document.createElement("div");
+        p1El.textContent = p1Label;
+        p1El.className = "player";
+        if (match.winner === p1Label) p1El.classList.add("winner");
+        matchDiv.appendChild(p1El);
 
-      if (match.board) {
-        const board = document.createElement("div");
-        board.className = "board-label";
-        board.textContent = `Board: ${match.board}`;
-        m.appendChild(board);
-      }
+        if (p2Label && p2Label !== "TBD") {
+          const p2El = document.createElement("div");
+          p2El.textContent = p2Label;
+          p2El.className = "player";
+          if (match.winner === p2Label) p2El.classList.add("winner");
+          matchDiv.appendChild(p2El);
+        }
 
-      if (match.marker) {
-        const marker = document.createElement("div");
-        marker.className = "marker-label";
-        marker.textContent = `Marker: ${match.marker}`;
-        m.appendChild(marker);
-      }
+        if (match.board) {
+          const boardEl = document.createElement("div");
+          boardEl.className = "board-label";
+          boardEl.textContent = `Board: ${match.board}`;
+          matchDiv.appendChild(boardEl);
+        }
 
-      div.appendChild(m);
+        if (match.marker) {
+          const markerEl = document.createElement("div");
+          markerEl.className = "marker-label";
+          markerEl.textContent = `Marker: ${match.marker}`;
+          matchDiv.appendChild(markerEl);
+        }
+
+        roundDiv.appendChild(matchDiv);
+      });
+
+      container.appendChild(roundDiv);
     });
+  }
 
-    bracket.appendChild(div);
-  });
-}
+  async function loadBracket() {
+    try {
+      const response = await fetch('bracket.json');
+      if (!response.ok) throw new Error("Failed to fetch bracket.json");
+      const data = await response.json();
+      renderBracket(data);
+    } catch (err) {
+      document.getElementById("bracket").textContent = "Failed to load bracket data.";
+      console.error(err);
+    }
+  }
 
-window.onload = render;
+  loadBracket();
 </script>
 
 </body>
