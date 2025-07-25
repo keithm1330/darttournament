@@ -66,13 +66,13 @@
 <h1>John Power Memorial Darts Tournament</h1>
 
 <a href="#" id="adminLink" class="btn" role="button" tabindex="0">Admin (Password Protected)</a>
-<a href="view.html" class="btn" role="button" tabindex="0">View Bracket</a>
+<a href="bracket.html" class="btn" role="button" tabindex="0">View Bracket</a>
 
 <script>
 document.getElementById('adminLink').addEventListener('click', function(e) {
   e.preventDefault();
   const password = prompt('Enter admin password:');
-  if (password === 'YourStrongPasswordHere') {
+  if (password === 'kmdarts180') {
     window.location.href = 'admin.html';
   } else {
     alert('Incorrect password!');
