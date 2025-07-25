@@ -3,68 +3,69 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>John Power Memorial Darts Tournament</title>
+<title>John Power Memorial Darts Tournament - Bracket</title>
 <style>
   body {
-    font-family: sans-serif;
-    background: #121212;
-    color: #eee;
-    margin: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333333;
+    margin: 10px 15px 40px 15px;
   }
   h1 {
     text-align: center;
-    color: #d32f2f;
-    margin-bottom: 30px;
+    color: #3aafa9;
+    margin-bottom: 25px;
+    font-size: 2rem;
   }
   .round {
     display: inline-block;
     vertical-align: top;
     margin-right: 15px;
-    min-width: 200px;
-    background: #222;
-    padding: 10px;
-    border-radius: 8px;
+    min-width: 220px;
   }
   .round h4 {
-    color: #f44336;
     text-align: center;
+    font-weight: 600;
+    color: #3aafa9;
     margin-bottom: 15px;
   }
   .match {
-    background: #333;
-    margin-bottom: 12px;
-    border-radius: 6px;
-    padding: 8px;
-  }
-  .game-title {
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: #fff;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
   .player {
-    padding: 5px 8px;
-    margin-bottom: 4px;
-    border-radius: 4px;
-    background: #444;
-    color: #eee;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
     user-select: none;
+    color: #333;
+    background-color: #e8f6f5;
   }
   .winner {
-    background: #d32f2f;
-    color: #fff;
-    font-weight: bold;
+    background-color: #3aafa9;
+    color: white;
+    font-weight: 700;
   }
-  .board-marker {
-    font-size: 12px;
-    color: #bbb;
-    margin-top: 4px;
+  .board-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 6px;
+    font-style: italic;
   }
-
-  /* Responsive for mobile */
-  @media (max-width: 700px) {
+  @media (max-width: 768px) {
     .round {
-      min-width: 100%;
-      margin-right: 0;
+      min-width: 180px;
+      margin-right: 10px;
+    }
+  }
+  @media (max-width: 480px) {
+    .round {
+      display: block;
+      min-width: auto;
       margin-bottom: 20px;
     }
   }
@@ -73,8 +74,7 @@
 <body>
 
 <h1>John Power Memorial Darts Tournament</h1>
-
-<div id="bracket">Loading bracket...</div>
+<div id="bracket"></div>
 
 <script>
 function getPlayerName(player) {
@@ -82,69 +82,80 @@ function getPlayerName(player) {
   return typeof player === "object" ? player.name : player;
 }
 
-function fetchBracketAndRender() {
-  fetch('bracket.json')
-    .then(response => {
-      if (!response.ok) throw new Error('Bracket data not found');
-      return response.json();
-    })
-    .then(rounds => {
-      render(rounds);
-    })
-    .catch(err => {
-      document.getElementById('bracket').textContent = 'Failed to load bracket data.';
-      console.error(err);
-    });
+function loadBracket() {
+  const data = localStorage.getItem("bracket");
+  return data ? JSON.parse(data) : null;
 }
 
-function render(rounds) {
-  const bracket = document.getElementById('bracket');
+function getWinnerName(match) {
+  return match.winner || null;
+}
+
+function getRoundName(rIndex, totalRounds) {
+  const last = totalRounds - 1;
+  if (rIndex === last) return "Final";
+  if (rIndex === last - 1) return "Semi Final";
+  if (rIndex === last - 2) return "Quarter Final";
+  if (rIndex === last - 3) return "Last 16";
+  return `Round ${rIndex + 1}`;
+}
+
+function render() {
+  const rounds = loadBracket();
+  if (!rounds) {
+    document.getElementById("bracket").textContent = "No bracket data found.";
+    return;
+  }
+  const bracket = document.getElementById("bracket");
   bracket.innerHTML = "";
 
-  rounds.forEach((round, r) => {
+  rounds.forEach((round, rIndex) => {
     const div = document.createElement("div");
     div.className = "round";
 
-    const roundNames = ["Final", "Semi Final", "Quarter Final"];
-    const fromEnd = rounds.length - r - 1;
-    if (fromEnd < 3) {
-      div.appendChild(Object.assign(document.createElement("h4"), { textContent: roundNames[fromEnd] }));
-    } else {
-      div.appendChild(Object.assign(document.createElement("h4"), { textContent: `Round ${r + 1}` }));
-    }
+    div.appendChild(Object.assign(document.createElement("h4"), {
+      textContent: getRoundName(rIndex, rounds.length),
+    }));
 
     round.forEach(match => {
-      const p1 = getPlayerName(match.player1);
-      const p2 = getPlayerName(match.player2);
-
-      if (!p1 && !p2) return;
-
       const m = document.createElement("div");
       m.className = "match";
 
-      const g = document.createElement("div");
-      g.textContent = `Game ${match.id}`;
-      g.className = "game-title";
-      m.appendChild(g);
+      // Winner or player fallback
+      const p1Name = getPlayerName(match.player1);
+      const p2Name = getPlayerName(match.player2);
+      const winnerName = match.winner || null;
 
-      const player1Div = document.createElement("div");
-      player1Div.textContent = p1 || "";
-      player1Div.className = "player" + (match.winner === p1 ? " winner" : "");
-      m.appendChild(player1Div);
+      // If player2 is null, winner is player1 (bye)
+      // Show winner or fallback player
+      const displayP1 = winnerName === p1Name || (!p2Name && !winnerName) ? p1Name : (winnerName === p1Name ? p1Name : p1Name);
+      const displayP2 = winnerName === p2Name ? p2Name : p2Name;
 
-      if (p2) {
-        const player2Div = document.createElement("div");
-        player2Div.textContent = p2;
-        player2Div.className = "player" + (match.winner === p2 ? " winner" : "");
-        m.appendChild(player2Div);
+      // Player 1
+      if (displayP1) {
+        const p1 = document.createElement("div");
+        p1.textContent = displayP1;
+        p1.className = "player";
+        if (winnerName === displayP1) p1.classList.add("winner");
+        m.appendChild(p1);
       }
 
-      const boardMarkerDiv = document.createElement("div");
-      boardMarkerDiv.className = "board-marker";
-      const boardText = match.board ? `Board: ${match.board}` : "";
-      const markerText = match.marker ? ` Marker: ${match.marker}` : "";
-      boardMarkerDiv.textContent = boardText + markerText;
-      m.appendChild(boardMarkerDiv);
+      // Player 2 (only if exists)
+      if (p2Name) {
+        const p2 = document.createElement("div");
+        p2.textContent = displayP2;
+        p2.className = "player";
+        if (winnerName === displayP2) p2.classList.add("winner");
+        m.appendChild(p2);
+      }
+
+      // Board label if assigned
+      if (match.board) {
+        const bLabel = document.createElement("div");
+        bLabel.className = "board-label";
+        bLabel.textContent = `Board: ${match.board}`;
+        m.appendChild(bLabel);
+      }
 
       div.appendChild(m);
     });
@@ -153,7 +164,7 @@ function render(rounds) {
   });
 }
 
-window.onload = fetchBracketAndRender;
+window.onload = render;
 </script>
 
 </body>
