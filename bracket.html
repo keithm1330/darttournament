@@ -7,141 +7,149 @@
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f4f8;
-    color: #222;
-    margin: 10px 15px 40px 15px;
+    background-color: #121212;
+    color: #f0f0f0;
+    margin: 15px;
   }
   h1 {
     text-align: center;
-    color: #117a8b;
-    margin-bottom: 25px;
-    font-size: 2rem;
+    color: #00b894;
+    margin-bottom: 30px;
+    font-size: 2.4rem;
+    font-weight: 700;
   }
+
   #bracket {
     display: flex;
     overflow-x: auto;
+    gap: 20px;
     padding-bottom: 10px;
-    -webkit-overflow-scrolling: touch;
   }
+
   .round {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(17,122,139,0.15);
-    min-width: 240px;
-    margin-right: 20px;
-    padding: 15px 12px;
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
+    background: #1e272e;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 260px;
+    max-height: 85vh;
     overflow-y: auto;
+    box-shadow: 0 0 12px #00b894aa;
+    flex-shrink: 0;
   }
-  .round:last-child {
-    margin-right: 0;
-  }
+
   .round h4 {
     text-align: center;
     font-weight: 700;
-    color: #117a8b;
-    margin-bottom: 18px;
-    border-bottom: 2px solid #117a8b;
-    padding-bottom: 6px;
-    user-select: none;
+    color: #00b894;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
   }
+
   .match {
-    background: #f9fcfd;
-    border: 1px solid #cde7ea;
+    background: #2d3436;
     border-radius: 10px;
-    padding: 10px 14px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 6px rgba(17,122,139,0.1);
-    user-select: none;
+    padding: 14px 12px;
+    margin-bottom: 16px;
+    box-shadow: inset 0 0 6px #000000a0;
+    display: flex;
+    flex-direction: column;
   }
+
   .game-number {
-    font-weight: 600;
     font-size: 0.9rem;
-    color: #117a8b;
-    margin-bottom: 6px;
-    user-select: none;
+    font-weight: 600;
+    color: #00cec9;
+    margin-bottom: 10px;
+    letter-spacing: 0.8px;
   }
+
   .players {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
+
   .player {
+    flex: 1;
+    background: #636e72;
     padding: 8px 12px;
     border-radius: 8px;
-    background-color: #d1e9ef;
-    color: #0a5a64;
+    text-align: center;
     font-weight: 600;
-    flex: 1;
-    text-align: center;
+    font-size: 1rem;
+    color: #dfe6e9;
+    user-select: none;
+    transition: background-color 0.3s ease;
   }
+
   .player.winner {
-    background-color: #117a8b;
-    color: #fff;
+    background-color: #00b894;
+    color: #1e272e;
     font-weight: 700;
-    box-shadow: 0 0 8px #117a8baa;
+    box-shadow: 0 0 10px #00b894bb;
   }
+
   .vs {
-    margin: 0 8px;
     font-weight: 700;
-    color: #117a8b;
+    color: #dfe6e9aa;
     user-select: none;
-  }
-  .board-label {
-    font-size: 0.85rem;
-    color: #555;
-    font-style: italic;
-    margin-top: 6px;
-    user-select: none;
+    width: 24px;
     text-align: center;
   }
 
-  /* Scrollbars style for modern browsers */
-  #bracket::-webkit-scrollbar {
-    height: 8px;
-  }
-  #bracket::-webkit-scrollbar-track {
-    background: #e0eff1;
-    border-radius: 10px;
-  }
-  #bracket::-webkit-scrollbar-thumb {
-    background-color: #117a8b;
-    border-radius: 10px;
-  }
-  .round::-webkit-scrollbar {
-    width: 6px;
-  }
-  .round::-webkit-scrollbar-track {
-    background: #f0f4f8;
-  }
-  .round::-webkit-scrollbar-thumb {
-    background-color: #117a8b88;
-    border-radius: 10px;
+  .board-label {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #81ecec;
+    text-align: center;
+    user-select: none;
   }
 
-  /* Responsive */
+  /* Scrollbars styling for webkit browsers */
+  #bracket::-webkit-scrollbar,
+  .round::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  #bracket::-webkit-scrollbar-thumb,
+  .round::-webkit-scrollbar-thumb {
+    background: #00b894aa;
+    border-radius: 6px;
+  }
+  #bracket::-webkit-scrollbar-track,
+  .round::-webkit-scrollbar-track {
+    background: #2d3436;
+  }
+
+  /* Responsive: on smaller devices, bracket scrolls horizontally */
   @media (max-width: 768px) {
     #bracket {
       padding-bottom: 15px;
     }
     .round {
-      min-width: 200px;
-      margin-right: 15px;
+      min-width: 220px;
       max-height: 70vh;
     }
   }
+
   @media (max-width: 480px) {
     #bracket {
-      display: flex;
-      overflow-x: auto;
-      padding-bottom: 12px;
+      gap: 15px;
     }
     .round {
-      min-width: 180px;
-      margin-right: 15px;
-      max-height: 60vh;
+      min-width: 200px;
+      max-height: 65vh;
+      padding: 12px;
+    }
+    .player {
+      font-size: 0.9rem;
+      padding: 6px 10px;
+    }
+    .game-number {
+      font-size: 0.8rem;
     }
   }
 </style>
@@ -164,15 +172,17 @@ async function loadBracket() {
   }
 }
 
-// Get label for player or winnerOf reference
 function getPlayerLabel(player) {
-  if (!player) return "";
+  if (!player) return "TBD";
+
   if (typeof player === "object") {
     if (player.winnerOf !== undefined) {
       return `Winner of Game ${player.winnerOf}`;
     }
-    return player.name || "";
+    if (player.name) return player.name;
+    return "TBD";
   }
+
   return player;
 }
 
@@ -206,7 +216,6 @@ function renderBracket(rounds) {
       const m = document.createElement("div");
       m.className = "match";
 
-      // Game number label
       if (match.id !== undefined) {
         const gameNum = document.createElement("div");
         gameNum.textContent = `Game ${match.id}`;
@@ -221,29 +230,25 @@ function renderBracket(rounds) {
       const playersContainer = document.createElement("div");
       playersContainer.className = "players";
 
-      // Player 1 div
       const p1Div = document.createElement("div");
-      p1Div.textContent = p1Label || "TBD";
+      p1Div.textContent = p1Label;
       p1Div.className = "player";
       if (winnerName === p1Label) p1Div.classList.add("winner");
       playersContainer.appendChild(p1Div);
 
-      // vs text
       const vsDiv = document.createElement("div");
       vsDiv.textContent = "vs";
       vsDiv.className = "vs";
       playersContainer.appendChild(vsDiv);
 
-      // Player 2 div
       const p2Div = document.createElement("div");
-      p2Div.textContent = p2Label || "TBD";
+      p2Div.textContent = p2Label;
       p2Div.className = "player";
       if (winnerName === p2Label) p2Div.classList.add("winner");
       playersContainer.appendChild(p2Div);
 
       m.appendChild(playersContainer);
 
-      // Board label if assigned
       if (match.board) {
         const bLabel = document.createElement("div");
         bLabel.className = "board-label";
