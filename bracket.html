@@ -1,75 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>John Power Memorial Darts Tournament - Bracket</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    color: #333333;
-    margin: 10px 15px 40px 15px;
-  }
-  h1 {
-    text-align: center;
-    color: #3aafa9;
-    margin-bottom: 25px;
-    font-size: 2rem;
-  }
-  .round {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 15px;
-    min-width: 220px;
-  }
-  .round h4 {
-    text-align: center;
-    font-weight: 600;
-    color: #3aafa9;
-    margin-bottom: 15px;
-  }
-  .match {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-  .player {
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 6px;
-    user-select: none;
-    color: #333;
-    background-color: #e8f6f5;
-  }
-  .winner {
-    background-color: #3aafa9;
-    color: white;
-    font-weight: 700;
-  }
-  .board-label {
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 6px;
-    font-style: italic;
-  }
-  @media (max-width: 768px) {
-    .round {
-      min-width: 180px;
-      margin-right: 10px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>John Power Memorial Darts Tournament - Bracket</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333333;
+      margin: 10px 15px 40px 15px;
     }
-  }
-  @media (max-width: 480px) {
-    .round {
-      display: block;
-      min-width: auto;
-      margin-bottom: 20px;
+    h1 {
+      text-align: center;
+      color: #3aafa9;
+      margin-bottom: 25px;
+      font-size: 2rem;
     }
-  }
-</style>
+    .round {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 15px;
+      min-width: 220px;
+    }
+    .round h4 {
+      text-align: center;
+      font-weight: 600;
+      color: #3aafa9;
+      margin-bottom: 15px;
+    }
+    .match {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .player {
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      user-select: none;
+      color: #333;
+      background-color: #e8f6f5;
+    }
+    .winner {
+      background-color: #3aafa9;
+      color: white;
+      font-weight: 700;
+    }
+    .board-label, .marker-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 6px;
+      font-style: italic;
+    }
+    @media (max-width: 768px) {
+      .round {
+        min-width: 180px;
+        margin-right: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .round {
+        display: block;
+        min-width: auto;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -77,18 +77,17 @@
 <div id="bracket"></div>
 
 <script>
-function getPlayerName(player) {
+function getPlayerLabel(player, fallbackPrefix = "Winner of Game") {
   if (!player) return "";
-  return typeof player === "object" ? player.name : player;
+  if (typeof player === "string") return player;
+  if (player.name && player.name.trim()) return player.name;
+  if (player.sourceMatchId) return `${fallbackPrefix} ${player.sourceMatchId}`;
+  return "";
 }
 
 function loadBracket() {
   const data = localStorage.getItem("bracket");
   return data ? JSON.parse(data) : null;
-}
-
-function getWinnerName(match) {
-  return match.winner || null;
 }
 
 function getRoundName(rIndex, totalRounds) {
@@ -106,6 +105,7 @@ function render() {
     document.getElementById("bracket").textContent = "No bracket data found.";
     return;
   }
+
   const bracket = document.getElementById("bracket");
   bracket.innerHTML = "";
 
@@ -121,40 +121,36 @@ function render() {
       const m = document.createElement("div");
       m.className = "match";
 
-      // Winner or player fallback
-      const p1Name = getPlayerName(match.player1);
-      const p2Name = getPlayerName(match.player2);
-      const winnerName = match.winner || null;
+      const p1Label = getPlayerLabel(match.player1);
+      const p2Label = getPlayerLabel(match.player2);
+      const winner = match.winner;
 
-      // If player2 is null, winner is player1 (bye)
-      // Show winner or fallback player
-      const displayP1 = winnerName === p1Name || (!p2Name && !winnerName) ? p1Name : (winnerName === p1Name ? p1Name : p1Name);
-      const displayP2 = winnerName === p2Name ? p2Name : p2Name;
+      const p1 = document.createElement("div");
+      p1.textContent = p1Label || "TBD";
+      p1.className = "player";
+      if (winner === p1Label) p1.classList.add("winner");
+      m.appendChild(p1);
 
-      // Player 1
-      if (displayP1) {
-        const p1 = document.createElement("div");
-        p1.textContent = displayP1;
-        p1.className = "player";
-        if (winnerName === displayP1) p1.classList.add("winner");
-        m.appendChild(p1);
-      }
-
-      // Player 2 (only if exists)
-      if (p2Name) {
+      if (p2Label) {
         const p2 = document.createElement("div");
-        p2.textContent = displayP2;
+        p2.textContent = p2Label;
         p2.className = "player";
-        if (winnerName === displayP2) p2.classList.add("winner");
+        if (winner === p2Label) p2.classList.add("winner");
         m.appendChild(p2);
       }
 
-      // Board label if assigned
       if (match.board) {
-        const bLabel = document.createElement("div");
-        bLabel.className = "board-label";
-        bLabel.textContent = `Board: ${match.board}`;
-        m.appendChild(bLabel);
+        const board = document.createElement("div");
+        board.className = "board-label";
+        board.textContent = `Board: ${match.board}`;
+        m.appendChild(board);
+      }
+
+      if (match.marker) {
+        const marker = document.createElement("div");
+        marker.className = "marker-label";
+        marker.textContent = `Marker: ${match.marker}`;
+        m.appendChild(marker);
       }
 
       div.appendChild(m);
