@@ -108,6 +108,15 @@
     user-select: none;
   }
 
+  .marker-label {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #fab1a0;
+    text-align: center;
+    user-select: none;
+  }
+
   /* Scrollbars styling for webkit browsers */
   #bracket::-webkit-scrollbar,
   .round::-webkit-scrollbar {
@@ -172,14 +181,16 @@ async function loadBracket() {
   }
 }
 
+// Returns player name or "Winner of Game X" if name missing
 function getPlayerLabel(player) {
   if (!player) return "TBD";
 
-  if (typeof player === "object") {
-    if (player.winnerOf !== undefined) {
-      return `Winner of Game ${player.winnerOf}`;
+  if (typeof player === "object" && player !== null) {
+    if (player.name && player.name.trim() !== "") {
+      return player.name;
+    } else if ("sourceMatchId" in player) {
+      return `Winner of Game ${player.sourceMatchId}`;
     }
-    if (player.name) return player.name;
     return "TBD";
   }
 
@@ -249,11 +260,18 @@ function renderBracket(rounds) {
 
       m.appendChild(playersContainer);
 
-      if (match.board) {
+      if (match.board !== null && match.board !== undefined) {
         const bLabel = document.createElement("div");
         bLabel.className = "board-label";
         bLabel.textContent = `Board: ${match.board}`;
         m.appendChild(bLabel);
+      }
+
+      if (match.marker) {
+        const markerLabel = document.createElement("div");
+        markerLabel.className = "marker-label";
+        markerLabel.textContent = `Marker: ${match.marker}`;
+        m.appendChild(markerLabel);
       }
 
       div.appendChild(m);
