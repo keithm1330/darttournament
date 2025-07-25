@@ -6,124 +6,129 @@
 <title>John Power Memorial Darts Tournament - Bracket</title>
 <style>
   body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f3f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
     color: #222;
-    margin: 20px;
+    margin: 10px 15px 40px 15px;
   }
   h1 {
     text-align: center;
-    color: #117a8b; /* Modern teal */
-    font-weight: 700;
-    font-size: 2.2rem;
-    margin-bottom: 30px;
+    color: #117a8b;
+    margin-bottom: 25px;
+    font-size: 2rem;
   }
-
   #bracket {
     display: flex;
-    gap: 20px;
     overflow-x: auto;
     padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
   }
-
   .round {
-    flex: 0 0 260px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 15px rgba(17, 122, 139, 0.15);
-    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(17,122,139,0.15);
+    min-width: 240px;
+    margin-right: 20px;
+    padding: 15px 12px;
     display: flex;
     flex-direction: column;
-    max-height: 75vh; /* limit vertical height */
-    overflow-y: auto; /* vertical scroll on matches */
+    max-height: 80vh;
+    overflow-y: auto;
   }
-
+  .round:last-child {
+    margin-right: 0;
+  }
   .round h4 {
-    color: #117a8b;
+    text-align: center;
     font-weight: 700;
-    margin-bottom: 15px;
-    font-size: 1.3rem;
+    color: #117a8b;
+    margin-bottom: 18px;
     border-bottom: 2px solid #117a8b;
     padding-bottom: 6px;
-  }
-
-  .match {
-    background: #f9fbfc;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(17, 122, 139, 0.1);
-    margin-bottom: 15px;
-    padding: 10px 12px;
-  }
-
-  .player {
-    background: #d0f0f4;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #04555f;
     user-select: none;
   }
-  .player.winner {
-    background: #117a8b;
-    color: white;
-    font-weight: 700;
-    box-shadow: 0 0 8px #117a8bcc;
+  .match {
+    background: #f9fcfd;
+    border: 1px solid #cde7ea;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(17,122,139,0.1);
+    user-select: none;
   }
-
-  .board-label,
   .marker-label {
-    font-size: 0.82rem;
-    color: #586f7c;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #117a8b;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+  .player {
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background-color: #d1e9ef;
+    color: #0a5a64;
+    font-weight: 600;
+  }
+  .player.winner {
+    background-color: #117a8b;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0 8px #117a8baa;
+  }
+  .board-label {
+    font-size: 0.85rem;
+    color: #555;
     font-style: italic;
-    margin-top: 4px;
+    margin-top: 6px;
+    user-select: none;
   }
 
-  /* Scrollbar styles for webkit browsers */
+  /* Scrollbars style for modern browsers */
   #bracket::-webkit-scrollbar {
     height: 8px;
   }
+  #bracket::-webkit-scrollbar-track {
+    background: #e0eff1;
+    border-radius: 10px;
+  }
   #bracket::-webkit-scrollbar-thumb {
-    background: #117a8baa;
+    background-color: #117a8b;
     border-radius: 10px;
   }
   .round::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+  }
+  .round::-webkit-scrollbar-track {
+    background: #f0f4f8;
   }
   .round::-webkit-scrollbar-thumb {
-    background: #117a8b99;
+    background-color: #117a8b88;
     border-radius: 10px;
   }
 
-  /* Responsive tweaks */
-  @media (max-width: 720px) {
+  /* Responsive */
+  @media (max-width: 768px) {
     #bracket {
+      padding-bottom: 15px;
+    }
+    .round {
+      min-width: 200px;
+      margin-right: 15px;
+      max-height: 70vh;
+    }
+  }
+  @media (max-width: 480px) {
+    #bracket {
+      display: flex;
+      overflow-x: auto;
       padding-bottom: 12px;
     }
     .round {
-      flex: 0 0 220px;
+      min-width: 180px;
+      margin-right: 15px;
       max-height: 60vh;
-      padding: 12px;
-    }
-  }
-
-  @media (max-width: 420px) {
-    #bracket {
-      gap: 12px;
-    }
-    .round {
-      flex: 0 0 180px;
-      max-height: 55vh;
-      padding: 10px;
-    }
-    .round h4 {
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-    }
-    .player {
-      font-size: 0.9rem;
-      padding: 6px 10px;
-      margin-bottom: 6px;
     }
   }
 </style>
@@ -134,90 +139,109 @@
 <div id="bracket">Loading bracket...</div>
 
 <script>
-  function getPlayerLabel(player) {
-    if (!player) return "TBD";
-    if (typeof player === "string") return player;
-    if (player.name) return player.name;
-    if (player.sourceMatchId !== undefined) return `Winner of Game ${player.sourceMatchId + 1}`;
-    return "TBD";
+async function loadBracket() {
+  try {
+    const response = await fetch('bracket.json', {cache: "no-store"});
+    if (!response.ok) throw new Error("Failed to load bracket data");
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.error(e);
+    return null;
   }
+}
 
-  function getRoundName(index, total) {
-    const last = total - 1;
-    if (index === last) return "Final";
-    if (index === last - 1) return "Semi Final";
-    if (index === last - 2) return "Quarter Final";
-    if (index === last - 3) return "Last 16";
-    return `Round ${index + 1}`;
-  }
-
-  function renderBracket(bracket) {
-    const container = document.getElementById("bracket");
-    container.innerHTML = "";
-
-    bracket.forEach((round, roundIndex) => {
-      const roundDiv = document.createElement("div");
-      roundDiv.className = "round";
-
-      const roundTitle = document.createElement("h4");
-      roundTitle.textContent = getRoundName(roundIndex, bracket.length);
-      roundDiv.appendChild(roundTitle);
-
-      round.forEach((match, matchIndex) => {
-        const matchDiv = document.createElement("div");
-        matchDiv.className = "match";
-
-        const p1Label = getPlayerLabel(match.player1);
-        const p2Label = getPlayerLabel(match.player2);
-
-        const p1El = document.createElement("div");
-        p1El.textContent = p1Label;
-        p1El.className = "player";
-        if (match.winner === p1Label) p1El.classList.add("winner");
-        matchDiv.appendChild(p1El);
-
-        if (p2Label && p2Label !== "TBD") {
-          const p2El = document.createElement("div");
-          p2El.textContent = p2Label;
-          p2El.className = "player";
-          if (match.winner === p2Label) p2El.classList.add("winner");
-          matchDiv.appendChild(p2El);
-        }
-
-        if (match.board) {
-          const boardEl = document.createElement("div");
-          boardEl.className = "board-label";
-          boardEl.textContent = `Board: ${match.board}`;
-          matchDiv.appendChild(boardEl);
-        }
-
-        if (match.marker) {
-          const markerEl = document.createElement("div");
-          markerEl.className = "marker-label";
-          markerEl.textContent = `Marker: ${match.marker}`;
-          matchDiv.appendChild(markerEl);
-        }
-
-        roundDiv.appendChild(matchDiv);
-      });
-
-      container.appendChild(roundDiv);
-    });
-  }
-
-  async function loadBracket() {
-    try {
-      const response = await fetch('bracket.json');
-      if (!response.ok) throw new Error("Failed to fetch bracket.json");
-      const data = await response.json();
-      renderBracket(data);
-    } catch (err) {
-      document.getElementById("bracket").textContent = "Failed to load bracket data.";
-      console.error(err);
+function getPlayerLabel(player) {
+  if (!player) return "";
+  if (typeof player === "object") {
+    if (player.winnerOf !== undefined) {
+      return `Winner of Game ${player.winnerOf}`;
     }
+    return player.name || "";
+  }
+  return player;
+}
+
+function getRoundName(rIndex, totalRounds) {
+  const last = totalRounds - 1;
+  if (rIndex === last) return "Final";
+  if (rIndex === last - 1) return "Semi Final";
+  if (rIndex === last - 2) return "Quarter Final";
+  if (rIndex === last - 3) return "Last 16";
+  return `Round ${rIndex + 1}`;
+}
+
+function renderBracket(rounds) {
+  if (!rounds || !rounds.length) {
+    document.getElementById("bracket").textContent = "No bracket data found.";
+    return;
   }
 
-  loadBracket();
+  const bracket = document.getElementById("bracket");
+  bracket.innerHTML = "";
+
+  rounds.forEach((round, rIndex) => {
+    const div = document.createElement("div");
+    div.className = "round";
+
+    div.appendChild(Object.assign(document.createElement("h4"), {
+      textContent: getRoundName(rIndex, rounds.length),
+    }));
+
+    round.forEach(match => {
+      const m = document.createElement("div");
+      m.className = "match";
+
+      // Show game number
+      if (match.id !== undefined) {
+        const gameNum = document.createElement("div");
+        gameNum.textContent = `Game ${match.id}`;
+        gameNum.className = "marker-label";
+        m.appendChild(gameNum);
+      }
+
+      const p1Label = getPlayerLabel(match.player1);
+      const p2Label = getPlayerLabel(match.player2);
+      const winnerName = match.winner || null;
+
+      // Player 1 div
+      if (p1Label) {
+        const p1 = document.createElement("div");
+        p1.textContent = p1Label;
+        p1.className = "player";
+        if (winnerName === p1Label) p1.classList.add("winner");
+        m.appendChild(p1);
+      }
+
+      // Player 2 div (if exists)
+      if (p2Label) {
+        const p2 = document.createElement("div");
+        p2.textContent = p2Label;
+        p2.className = "player";
+        if (winnerName === p2Label) p2.classList.add("winner");
+        m.appendChild(p2);
+      }
+
+      // Board label if assigned
+      if (match.board) {
+        const bLabel = document.createElement("div");
+        bLabel.className = "board-label";
+        bLabel.textContent = `Board: ${match.board}`;
+        m.appendChild(bLabel);
+      }
+
+      bracket.appendChild(div);
+      div.appendChild(m);
+    });
+
+    bracket.appendChild(div);
+  });
+}
+
+window.onload = async () => {
+  const rounds = await loadBracket();
+  renderBracket(rounds);
+};
 </script>
 
 </body>
