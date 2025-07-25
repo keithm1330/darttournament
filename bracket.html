@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>John Power Memorial Darts Tournament</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background-color: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    .bracket {
+      display: flex;
+      overflow-x: auto;
+      padding: 20px;
+      gap: 16px;
+    }
+
+    .round {
+      flex: 0 0 auto;
+      min-width: 220px;
+    }
+
+    .round h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .match {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .match .game-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .player {
+      padding: 6px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      background: #eee;
+    }
+
+    .winner {
+      background: #2b9348;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .meta {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.4em;
+      }
+
+      .round {
+        min-width: 180px;
+      }
+
+      .player {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>John Power Memorial Darts Tournament</h1>
+  </header>
+
+  <div class="bracket" id="bracket"></div>
+
+  <script>
+    function getPlayerName(player) {
+      if (!player) return "";
+      return typeof player === "object" ? player.name : player;
+    }
+
+    function render(bracket) {
+      const container = document.getElementById("bracket");
+      container.innerHTML = "";
+
+      bracket.forEach((round, rIndex) => {
+        const roundDiv = document.createElement("div");
+        roundDiv.className = "round";
+
+        const roundNames = ["Final", "Semi Final", "Quarter Final"];
+        const fromEnd = bracket.length - rIndex - 1;
+        const roundTitle = fromEnd < 3 ? roundNames[fromEnd] : `Round ${rIndex + 1}`;
+        const title = document.createElement("h3");
+        title.textContent = roundTitle;
+        roundDiv.appendChild(title);
+
+        round.forEach(match => {
+          const p1 = getPlayerName(match.player1);
+          const p2 = getPlayerName(match.player2);
+
+          // Show Winner of Match X if sourceMatchId is present and name is empty
+          const p1Name = p1 || (match.player1?.sourceMatchId ? `Winner of Game ${match.player1.sourceMatchId}` : "");
+          const p2Name = p2 || (match.player2?.sourceMatchId ? `Winner of Game ${match.player2.sourceMatchId}` : "");
+
+          const matchDiv = document.createElement("div");
+          matchDiv.className = "match";
+
+          const gameTitle = document.createElement("div");
+          gameTitle.className = "game-title";
+          gameTitle.textContent = `Game ${match.id}`;
+          matchDiv.appendChild(gameTitle);
+
+          if (p1Name) {
+            const p1Div = document.createElement("div");
+            p1Div.className = "player";
+            if (match.winner === p1) p1Div.classList.add("winner");
+            p1Div.textContent = p1Name;
+            matchDiv.appendChild(p1Div);
+          }
+
+          if (p2Name) {
+            const p2Div = document.createElement("div");
+            p2Div.className = "player";
+            if (match.winner === p2) p2Div.classList.add("winner");
+            p2Div.textContent = p2Name;
+            matchDiv.appendChild(p2Div);
+          }
+
+          if (match.board || match.marker) {
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            if (match.board) meta.textContent = `Board: ${match.board}`;
+            if (match.marker) meta.textContent += `${match.board ? " | " : ""}Marker: ${match.marker}`;
+            matchDiv.appendChild(meta);
+          }
+
+          roundDiv.appendChild(matchDiv);
+        });
+
+        container.appendChild(roundDiv);
+      });
+    }
+
+    function loadBracket() {
+      const saved = localStorage.getItem("bracket");
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    window.onload = () => {
+      const bracket = loadBracket();
+      render(bracket);
+    };
+  </script>
+</body>
+</html>

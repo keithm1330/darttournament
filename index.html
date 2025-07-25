@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Darts Tournament</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #111;
+      color: #fff;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 2rem;
+      text-align: center;
+      color: #e63946;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #d62828;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      button {
+        width: 80%;
+        font-size: 1rem;
+      }
+
+      .buttons {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>John Power Memorial Darts Tournament</h1>
+
+  <div class="buttons">
+    <button onclick="window.location.href='bracket.html'">View Bracket</button>
+    <button onclick="enterAdmin()">Enter Admin</button>
+  </div>
+
+  <script>
+    function enterAdmin() {
+      const password = prompt("Enter admin password:");
+      const correctPassword = "JpAdmin2025"; // Change this to your desired password
+
+      if (password === correctPassword) {
+        window.location.href = "admin.html";
+      } else if (password !== null) {
+        alert("Incorrect password.");
+      }
+    }
+  </script>
+
+</body>
+</html>
