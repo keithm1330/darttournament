@@ -7,8 +7,8 @@
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
-    color: #eee;
+    background-color: #f5f7fa;
+    color: #333333;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -19,7 +19,7 @@
   }
 
   h1 {
-    color: #d32f2f;
+    color: #3aafa9;
     font-size: 2.5rem;
     margin-bottom: 40px;
     text-align: center;
@@ -27,13 +27,13 @@
 
   .btn {
     display: inline-block;
-    background-color: #d32f2f;
+    background-color: #3aafa9;
     color: white;
     text-decoration: none;
     font-weight: 600;
     padding: 15px 35px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.5);
+    box-shadow: 0 4px 10px rgba(58, 175, 169, 0.5);
     margin: 15px;
     font-size: 1.2rem;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -42,8 +42,8 @@
   }
 
   .btn:hover, .btn:focus {
-    background-color: #b71c1c;
-    box-shadow: 0 6px 14px rgba(183, 28, 28, 0.7);
+    background-color: #2c8f8a;
+    box-shadow: 0 6px 14px rgba(44, 143, 138, 0.7);
   }
 
   @media (max-width: 480px) {
@@ -72,7 +72,7 @@
 document.getElementById('adminLink').addEventListener('click', function(e) {
   e.preventDefault();
   const password = prompt('Enter admin password:');
-  if (password === 'kmdarts180') {
+  if (password === 'YourStrongPasswordHere') {
     window.location.href = 'admin.html';
   } else {
     alert('Incorrect password!');
