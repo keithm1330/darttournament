@@ -5,18 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>John Power Memorial Darts Tournament - Bracket</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
+
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9faff;
-    color: #222222;
+    font-family: 'Roboto', sans-serif;
+    background: #121812;
+    color: #eee;
     margin: 20px;
   }
+
   h1 {
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
-    color: #3a86ff;
+    color: #d92f2f;
     margin-bottom: 36px;
-    font-size: 2.6rem;
-    font-weight: 700;
+    font-size: 2.8rem;
+    letter-spacing: 3px;
+    text-shadow: 0 0 6px #ff3b3b, 0 0 12px #d92f2f;
   }
 
   #bracket {
@@ -28,86 +33,94 @@
   }
 
   .round {
-    background: #ffffff;
-    border-radius: 14px;
+    background: linear-gradient(135deg, #1a2a10 0%, #2c3e17 100%);
+    border-radius: 8px;
     padding: 24px 20px;
-    min-width: 280px;
+    min-width: 300px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 4px 14px rgba(58, 134, 255, 0.15);
+    box-shadow:
+      0 0 10px #0b2604,
+      inset 0 0 30px #4caf5080;
+    border: 2px solid #4caf50;
     flex-shrink: 0;
-    border: 1px solid #e0e7ff;
   }
 
   .round h4 {
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
     font-weight: 700;
-    color: #3a86ff;
+    color: #ff3838;
     margin-bottom: 26px;
-    font-size: 1.5rem;
-    letter-spacing: 1.3px;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px #ff3838cc;
   }
 
   .match {
-    background: #f4f6fb;
-    border-radius: 12px;
+    background: #22331f;
+    border-radius: 6px;
     padding: 18px 16px;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 6px #dbe6ff;
+    box-shadow: inset 0 0 10px #3d592e;
     display: flex;
     flex-direction: column;
-    border: 1px solid #d6dbf5;
+    border: 1px solid #4caf50aa;
   }
 
   .game-number {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #3a86ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #82ff82;
     margin-bottom: 14px;
-    letter-spacing: 0.9px;
+    letter-spacing: 0.8px;
+    text-shadow: 0 0 4px #82ff82aa;
   }
 
   .players {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 20px;
   }
 
   .player {
-    background: #e7ecff;
+    background: #33502b;
     padding: 12px 20px;
-    border-radius: 12px;
+    border-radius: 6px;
     text-align: center;
     font-weight: 600;
-    font-size: 1.1rem;
-    color: #222222;
+    font-size: 1.15rem;
+    color: #c1e1c1;
     user-select: none;
-    transition: background-color 0.3s ease;
-    min-width: 120px;
-    box-shadow: 0 1px 3px rgb(58 134 255 / 0.15);
+    box-shadow: 0 0 6px #3fff3f66;
+    min-width: 140px;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .player.winner {
-    background-color: #3a86ff;
-    color: white;
+    background-color: #ff3838;
+    color: #fff;
     font-weight: 700;
-    box-shadow: 0 0 15px #3a86ffcc;
+    box-shadow: 0 0 20px #ff3838cc;
   }
 
   .vs {
+    font-family: 'Orbitron', sans-serif;
     font-weight: 700;
-    color: #6b7a99;
+    color: #a4d65e;
     user-select: none;
-    width: 32px;
+    width: 30px;
     text-align: center;
+    text-shadow: 0 0 3px #a4d65eaa;
   }
 
   .board-label {
     margin-top: 12px;
     font-size: 0.95rem;
     font-style: italic;
-    color: #7d8eb8;
+    color: #7fa879;
     text-align: center;
     user-select: none;
   }
@@ -116,7 +129,7 @@
     margin-top: 8px;
     font-size: 0.95rem;
     font-style: italic;
-    color: #ff6f91;
+    color: #ff8c61;
     text-align: center;
     user-select: none;
   }
@@ -129,12 +142,12 @@
   }
   #bracket::-webkit-scrollbar-thumb,
   .round::-webkit-scrollbar-thumb {
-    background: #3a86ffaa;
+    background: #82ff8266;
     border-radius: 8px;
   }
   #bracket::-webkit-scrollbar-track,
   .round::-webkit-scrollbar-track {
-    background: #f9faff;
+    background: #121812;
   }
 
   /* Responsive improvements */
@@ -144,7 +157,7 @@
       padding: 12px 20px 20px 20px;
     }
     .round {
-      min-width: 250px;
+      min-width: 260px;
       max-height: 75vh;
       padding: 20px 18px;
     }
@@ -155,11 +168,11 @@
     .player {
       font-size: 1rem;
       padding: 11px 16px;
-      min-width: 110px;
-      box-shadow: 0 1px 5px rgb(58 134 255 / 0.12);
+      min-width: 130px;
+      box-shadow: 0 0 8px #44c34488;
     }
     .game-number {
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
   }
 
@@ -180,8 +193,8 @@
     .player {
       font-size: 0.95rem;
       padding: 10px 14px;
-      min-width: 100px;
-      box-shadow: 0 1px 5px rgb(58 134 255 / 0.1);
+      min-width: 110px;
+      box-shadow: 0 0 6px #44c344aa;
     }
     .game-number {
       font-size: 0.9rem;
@@ -264,10 +277,10 @@ function render() {
         matchDiv.className = "match";
 
         // Game number
-        const gameNum = document.createElement("div");
-        gameNum.className = "game-number";
-        gameNum.textContent = `Game ${match.id}`;
-        matchDiv.appendChild(gameNum);
+        const gameNumberDiv = document.createElement("div");
+        gameNumberDiv.className = "game-number";
+        gameNumberDiv.textContent = `Game ${match.id}`;
+        matchDiv.appendChild(gameNumberDiv);
 
         // Players container
         const playersDiv = document.createElement("div");
@@ -276,19 +289,25 @@ function render() {
         const p1Name = getPlayerDisplay(match.player1, rounds);
         const p2Name = getPlayerDisplay(match.player2, rounds);
 
-        const p1Div = document.createElement("div");
-        p1Div.className = "player";
-        if (match.winner === p1Name) p1Div.classList.add("winner");
-        p1Div.textContent = p1Name || "";
+        // Player 1
+        if (p1Name) {
+          const p1Div = document.createElement("div");
+          p1Div.className = "player";
+          if (match.winner === p1Name) p1Div.classList.add("winner");
+          p1Div.textContent = p1Name;
+          playersDiv.appendChild(p1Div);
+        }
 
-        playersDiv.appendChild(p1Div);
-
-        if (p2Name) {
+        // Show "v" only if p2 exists and is not empty and p1 exists
+        if (p2Name && p1Name) {
           const vsDiv = document.createElement("div");
           vsDiv.className = "vs";
           vsDiv.textContent = "v";
           playersDiv.appendChild(vsDiv);
+        }
 
+        // Player 2
+        if (p2Name) {
           const p2Div = document.createElement("div");
           p2Div.className = "player";
           if (match.winner === p2Name) p2Div.classList.add("winner");
@@ -298,6 +317,7 @@ function render() {
 
         matchDiv.appendChild(playersDiv);
 
+        // Board label
         if (match.board) {
           const boardDiv = document.createElement("div");
           boardDiv.className = "board-label";
@@ -305,6 +325,7 @@ function render() {
           matchDiv.appendChild(boardDiv);
         }
 
+        // Marker label
         if (match.marker) {
           const markerDiv = document.createElement("div");
           markerDiv.className = "marker-label";
