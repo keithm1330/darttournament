@@ -30,7 +30,7 @@
       "player2": "Hayden Wells",
       "winner": null,
       "board": 1,
-      "marker": null
+      "marker": "Steve"
     },
     {
       "id": 5,
@@ -38,7 +38,7 @@
       "player2": "Jaden Ellis",
       "winner": null,
       "board": 2,
-      "marker": null
+      "marker": "mark"
     },
     {
       "id": 6,
@@ -46,7 +46,7 @@
       "player2": "Remy Blake",
       "winner": null,
       "board": 3,
-      "marker": null
+      "marker": "john"
     },
     {
       "id": 7,
@@ -54,7 +54,7 @@
       "player2": "Reese Vaughn",
       "winner": null,
       "board": 4,
-      "marker": null
+      "marker": "kev"
     },
     {
       "id": 8,
