@@ -1,89 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Darts Tournament</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: #111;
-      color: #fff;
-    }
-
-    h1 {
-      margin-bottom: 40px;
-      font-size: 2rem;
-      text-align: center;
-      color: #e63946;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    button {
-      background: #e63946;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #d62828;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      button {
-        width: 80%;
-        font-size: 1rem;
-      }
-
-      .buttons {
-        flex-direction: column;
-        gap: 16px;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Darts Tournament Home</title>
+<style>
+  body { font-family: sans-serif; text-align: center; padding: 50px; background: #111; color: #eee; }
+  a { display: inline-block; margin: 20px; padding: 15px 30px; background: #d32f2f; color: white; text-decoration: none; font-weight: bold; border-radius: 8px; }
+  a:hover { background: #b71c1c; }
+</style>
 </head>
 <body>
-
   <h1>John Power Memorial Darts Tournament</h1>
-
-  <div class="buttons">
-    <button onclick="window.location.href='bracket.html'">View Bracket</button>
-    <button onclick="enterAdmin()">Enter Admin</button>
-  </div>
+  <a href="admin.html" id="adminLink">Admin (Password Protected)</a>
+  <a href="view.html" target="_blank">View Public Bracket</a>
 
   <script>
-    function enterAdmin() {
-      const password = prompt("Enter admin password:");
-      const correctPassword = "JpAdmin2025"; // Change this to your desired password
-
-      if (password === correctPassword) {
-        window.location.href = "admin.html";
-      } else if (password !== null) {
-        alert("Incorrect password.");
+    document.getElementById('adminLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      const password = prompt('Enter admin password:');
+      if (password === 'yourStrongPassword') { // Change this password
+        window.location.href = 'admin.html';
+      } else {
+        alert('Incorrect password!');
       }
-    }
+    });
   </script>
-
 </body>
 </html>
