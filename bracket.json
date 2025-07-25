@@ -1,0 +1,82 @@
+[
+  [
+    {
+      "id": 1,
+      "player1": "1",
+      "player2": null,
+      "winner": "1",
+      "board": null,
+      "marker": null
+    },
+    {
+      "id": 2,
+      "player1": "2",
+      "player2": null,
+      "winner": "2",
+      "board": null,
+      "marker": null
+    },
+    {
+      "id": 3,
+      "player1": "3",
+      "player2": "4",
+      "winner": "3",
+      "board": null,
+      "marker": null
+    },
+    {
+      "id": 4,
+      "player1": "5",
+      "player2": "6",
+      "winner": "5",
+      "board": null,
+      "marker": null
+    }
+  ],
+  [
+    {
+      "id": 5,
+      "player1": {
+        "name": "1",
+        "sourceMatchId": 1
+      },
+      "player2": {
+        "name": "2",
+        "sourceMatchId": 2
+      },
+      "winner": null,
+      "board": null,
+      "marker": null
+    },
+    {
+      "id": 6,
+      "player1": {
+        "name": "3",
+        "sourceMatchId": 3
+      },
+      "player2": {
+        "name": "5",
+        "sourceMatchId": 4
+      },
+      "winner": null,
+      "board": null,
+      "marker": null
+    }
+  ],
+  [
+    {
+      "id": 7,
+      "player1": {
+        "name": "",
+        "sourceMatchId": 5
+      },
+      "player2": {
+        "name": "",
+        "sourceMatchId": 6
+      },
+      "winner": null,
+      "board": null,
+      "marker": null
+    }
+  ]
+]
