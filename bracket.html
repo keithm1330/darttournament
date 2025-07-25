@@ -1,56 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>John Power Memorial Darts Tournament - Bracket</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #3aafa9;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>John Power Memorial Darts Tournament - Bracket</title>
+<style>
+  body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f3f5;
+    color: #222;
+    margin: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #117a8b; /* Modern teal */
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+
+  #bracket {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .round {
+    flex: 0 0 260px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(17, 122, 139, 0.15);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    max-height: 75vh; /* limit vertical height */
+    overflow-y: auto; /* vertical scroll on matches */
+  }
+
+  .round h4 {
+    color: #117a8b;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #117a8b;
+    padding-bottom: 6px;
+  }
+
+  .match {
+    background: #f9fbfc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(17, 122, 139, 0.1);
+    margin-bottom: 15px;
+    padding: 10px 12px;
+  }
+
+  .player {
+    background: #d0f0f4;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #04555f;
+    user-select: none;
+  }
+  .player.winner {
+    background: #117a8b;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 0 8px #117a8bcc;
+  }
+
+  .board-label,
+  .marker-label {
+    font-size: 0.82rem;
+    color: #586f7c;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* Scrollbar styles for webkit browsers */
+  #bracket::-webkit-scrollbar {
+    height: 8px;
+  }
+  #bracket::-webkit-scrollbar-thumb {
+    background: #117a8baa;
+    border-radius: 10px;
+  }
+  .round::-webkit-scrollbar {
+    width: 8px;
+  }
+  .round::-webkit-scrollbar-thumb {
+    background: #117a8b99;
+    border-radius: 10px;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 720px) {
+    #bracket {
+      padding-bottom: 12px;
     }
     .round {
-      display: inline-block;
-      vertical-align: top;
-      margin-right: 15px;
-      min-width: 220px;
+      flex: 0 0 220px;
+      max-height: 60vh;
+      padding: 12px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    #bracket {
+      gap: 12px;
+    }
+    .round {
+      flex: 0 0 180px;
+      max-height: 55vh;
+      padding: 10px;
     }
     .round h4 {
-      text-align: center;
-      color: #3aafa9;
+      font-size: 1.1rem;
       margin-bottom: 10px;
     }
-    .match {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 15px;
-    }
     .player {
-      padding: 6px 8px;
-      margin-bottom: 5px;
-      border-radius: 4px;
-      background-color: #e8f6f5;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      margin-bottom: 6px;
     }
-    .winner {
-      background-color: #3aafa9;
-      color: #fff;
-      font-weight: bold;
-    }
-    .board-label,
-    .marker-label {
-      font-size: 0.85rem;
-      color: #666;
-      font-style: italic;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
