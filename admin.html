@@ -1,43 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Darts Bracket Admin</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    textarea { width: 100%; height: 100px; font-size: 14px; margin-bottom: 10px; }
-    button { padding: 6px 12px; margin: 5px; }
-    .round { display: inline-block; vertical-align: top; margin-right: 20px; min-width: 220px; }
-    .match { border: 1px solid #ccc; border-radius: 6px; padding: 8px; margin-bottom: 12px; background: #f9f9f9; }
-    .player { padding: 4px; cursor: pointer; border-radius: 4px; margin-bottom: 4px; user-select: none; }
-    .player:hover { background: #e0e0e0; }
-    .winner { background: #4CAF50; color: white; font-weight: bold; }
-    .board-input { width: 60px; margin-top: 6px; }
-    input[type="text"] { width: 100%; box-sizing: border-box; padding: 4px; margin: 4px 0; }
-    .marker-input { margin-top: 6px; box-sizing: border-box; padding: 4px; width: 100%; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Darts Tournament Admin</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; background: #111; color: #eee; }
+  textarea { width: 100%; height: 100px; font-size: 14px; margin-bottom: 10px; background: #222; color: #eee; border: 1px solid #444; }
+  button { padding: 10px 20px; margin: 10px 5px; background: #d32f2f; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #b71c1c; }
+  .round { display: inline-block; vertical-align: top; margin-right: 20px; min-width: 220px; background: #222; padding: 10px; border-radius: 6px; }
+  .match { border: 1px solid #444; border-radius: 6px; padding: 8px; margin-bottom: 12px; background: #333; }
+  .player { padding: 4px; cursor: pointer; border-radius: 4px; margin-bottom: 4px; user-select: none; }
+  .player:hover { background: #444; }
+  .winner { background: #4CAF50; color: white; font-weight: bold; }
+  .board-input, .marker-input { width: 100%; box-sizing: border-box; padding: 4px; margin-top: 6px; background: #222; color: #eee; border: 1px solid #444; border-radius: 4px; }
+</style>
 </head>
 <body>
 
-<h2>Darts Tournament Admin</h2>
-<a href="bracket.html" target="_blank">🔗 View Public Bracket</a><br /><br />
-
+<h2>Admin: John Power Memorial Darts Tournament</h2>
 <textarea id="players" placeholder="Enter one player per line..."></textarea><br />
 <button id="generate">Generate Bracket</button>
 <button id="reset">Clear All</button>
-<button id="export">Export as PDF</button>
+<button id="export">Export Bracket JSON</button>
 
 <div id="bracket"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+// Utility functions
 function getPlayerName(player) {
   if (!player) return "";
   return typeof player === "object" ? player.name : player;
 }
 
+// Save/load bracket in localStorage for admin convenience
 function saveBracket(data) {
   localStorage.setItem("bracket", JSON.stringify(data));
 }
@@ -47,38 +44,37 @@ function loadBracket() {
   return data ? JSON.parse(data) : null;
 }
 
-// Create bracket rounds and matches with byes assigned only in round 1
+// Bracket creation with byes only in round 1
 function createBracket(players) {
   let totalPlayers = players.length;
   let nextPowerOf2 = 1;
   while (nextPowerOf2 < totalPlayers) nextPowerOf2 *= 2;
   let numByes = nextPowerOf2 - totalPlayers;
 
-  // Shuffle players randomly
   players = players.sort(() => Math.random() - 0.5);
 
   const rounds = [];
   let matchId = 1;
 
-  // Round 1 matches with byes assigned (player2=null means bye)
+  // Round 1
   const round1 = [];
-  let playerIdx = 0;
-  while (playerIdx < totalPlayers) {
-    const p1 = players[playerIdx++];
+  let idx = 0;
+  while (idx < totalPlayers) {
+    const p1 = players[idx++];
     let p2 = null;
 
     if (numByes > 0) {
       p2 = null;
       numByes--;
-    } else if (playerIdx < totalPlayers) {
-      p2 = players[playerIdx++];
+    } else if (idx < totalPlayers) {
+      p2 = players[idx++];
     }
 
     round1.push({id: matchId++, player1: p1, player2: p2, winner: null, board: null, marker: null});
   }
   rounds.push(round1);
 
-  // Build subsequent rounds (empty player slots, linked by sourceMatchId)
+  // Subsequent rounds
   let currentRound = round1;
   while (currentRound.length > 1) {
     const nextRound = [];
@@ -100,7 +96,6 @@ function createBracket(players) {
   return rounds;
 }
 
-// Auto-advance BYEs ONLY IN ROUND 1
 function autoAdvanceByes(rounds) {
   const firstRound = rounds[0];
   for (const match of firstRound) {
@@ -114,7 +109,6 @@ function autoAdvanceByes(rounds) {
   }
 }
 
-// Propagate winner's name forward in bracket
 function propagateWinner(rounds, match, winnerName) {
   for (let r = 1; r < rounds.length; r++) {
     for (const m of rounds[r]) {
@@ -122,7 +116,6 @@ function propagateWinner(rounds, match, winnerName) {
         const player = m[key];
         if (player && typeof player === "object" && player.sourceMatchId === match.id) {
           player.name = winnerName || "";
-          // Clear winner if no longer valid:
           if (m.winner !== getPlayerName(m.player1) && m.winner !== getPlayerName(m.player2)) {
             m.winner = null;
           }
@@ -135,7 +128,6 @@ function propagateWinner(rounds, match, winnerName) {
 
 function setWinner(rounds, match, name) {
   if (match.winner === name) {
-    // Unselect winner if clicked again
     match.winner = null;
     propagateWinner(rounds, match, null);
   } else {
@@ -172,8 +164,7 @@ function render(rounds) {
     const div = document.createElement("div");
     div.className = "round";
 
-    // Last 3 rounds named Quarter Final, Semi Final, Final
-    const roundNames = ["Final" , "Semi Final", "Quarter Final"];
+    const roundNames = ["Final", "Semi Final", "Quarter Final"];
     const fromEnd = rounds.length - r - 1;
     if (fromEnd < 3) {
       div.appendChild(Object.assign(document.createElement("h4"), { textContent: roundNames[fromEnd] }));
@@ -185,7 +176,6 @@ function render(rounds) {
       const p1 = getPlayerName(match.player1);
       const p2 = getPlayerName(match.player2);
 
-      // Skip matches with no players
       if (!p1 && !p2) return;
 
       const m = document.createElement("div");
@@ -226,7 +216,7 @@ function render(rounds) {
         m.appendChild(wrapper);
       });
 
-      // Board number input
+      // Board input
       const b = document.createElement("input");
       b.type = "number";
       b.min = 1;
@@ -240,7 +230,7 @@ function render(rounds) {
       };
       m.appendChild(b);
 
-      // Marker input (new feature)
+      // Marker input
       const markerInput = document.createElement("input");
       markerInput.type = "text";
       markerInput.placeholder = "Marker (optional)";
@@ -281,15 +271,18 @@ document.getElementById("reset").onclick = () => {
 };
 
 document.getElementById("export").onclick = () => {
-  html2canvas(document.getElementById("bracket")).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jspdf.jsPDF();
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("bracket.pdf");
-  });
+  const rounds = loadBracket();
+  if (!rounds) {
+    alert("No bracket data to export. Generate bracket first.");
+    return;
+  }
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rounds, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "bracket.json");
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
 };
 
 window.onload = () => {
@@ -297,5 +290,6 @@ window.onload = () => {
   if (saved) render(saved);
 };
 </script>
+
 </body>
 </html>
