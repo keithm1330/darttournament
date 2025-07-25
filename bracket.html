@@ -56,20 +56,26 @@
     box-shadow: 0 2px 6px rgba(17,122,139,0.1);
     user-select: none;
   }
-  .marker-label {
+  .game-number {
     font-weight: 600;
     font-size: 0.9rem;
     color: #117a8b;
     margin-bottom: 6px;
     user-select: none;
   }
+  .players {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .player {
     padding: 8px 12px;
     border-radius: 8px;
-    margin-bottom: 6px;
     background-color: #d1e9ef;
     color: #0a5a64;
     font-weight: 600;
+    flex: 1;
+    text-align: center;
   }
   .player.winner {
     background-color: #117a8b;
@@ -77,12 +83,19 @@
     font-weight: 700;
     box-shadow: 0 0 8px #117a8baa;
   }
+  .vs {
+    margin: 0 8px;
+    font-weight: 700;
+    color: #117a8b;
+    user-select: none;
+  }
   .board-label {
     font-size: 0.85rem;
     color: #555;
     font-style: italic;
     margin-top: 6px;
     user-select: none;
+    text-align: center;
   }
 
   /* Scrollbars style for modern browsers */
@@ -151,7 +164,7 @@ async function loadBracket() {
   }
 }
 
-// Return a label for a player object or string
+// Get label for player or winnerOf reference
 function getPlayerLabel(player) {
   if (!player) return "";
   if (typeof player === "object") {
@@ -193,51 +206,42 @@ function renderBracket(rounds) {
       const m = document.createElement("div");
       m.className = "match";
 
-      // Show game number
+      // Game number label
       if (match.id !== undefined) {
         const gameNum = document.createElement("div");
         gameNum.textContent = `Game ${match.id}`;
-        gameNum.className = "marker-label";
+        gameNum.className = "game-number";
         m.appendChild(gameNum);
       }
 
-      const p1 = match.player1;
-      const p2 = match.player2;
+      const p1Label = getPlayerLabel(match.player1);
+      const p2Label = getPlayerLabel(match.player2);
       const winnerName = match.winner || null;
 
-      // Check if both players are winnerOf references
-      const p1IsWinnerOf = p1 && typeof p1 === "object" && p1.winnerOf !== undefined;
-      const p2IsWinnerOf = p2 && typeof p2 === "object" && p2.winnerOf !== undefined;
+      const playersContainer = document.createElement("div");
+      playersContainer.className = "players";
 
-      if (p1IsWinnerOf && p2IsWinnerOf) {
-        // Show combined label like "Winner of Game X vs Winner of Game Y"
-        const combinedLabel = `Winner of Game ${p1.winnerOf} vs Winner of Game ${p2.winnerOf}`;
-        const combinedDiv = document.createElement("div");
-        combinedDiv.textContent = combinedLabel;
-        combinedDiv.className = "player";
-        if (winnerName === combinedLabel) combinedDiv.classList.add("winner");
-        m.appendChild(combinedDiv);
-      } else {
-        // Show each player separately
+      // Player 1 div
+      const p1Div = document.createElement("div");
+      p1Div.textContent = p1Label || "TBD";
+      p1Div.className = "player";
+      if (winnerName === p1Label) p1Div.classList.add("winner");
+      playersContainer.appendChild(p1Div);
 
-        const p1Label = getPlayerLabel(p1);
-        if (p1Label) {
-          const p1Div = document.createElement("div");
-          p1Div.textContent = p1Label;
-          p1Div.className = "player";
-          if (winnerName === p1Label) p1Div.classList.add("winner");
-          m.appendChild(p1Div);
-        }
+      // vs text
+      const vsDiv = document.createElement("div");
+      vsDiv.textContent = "vs";
+      vsDiv.className = "vs";
+      playersContainer.appendChild(vsDiv);
 
-        const p2Label = getPlayerLabel(p2);
-        if (p2Label) {
-          const p2Div = document.createElement("div");
-          p2Div.textContent = p2Label;
-          p2Div.className = "player";
-          if (winnerName === p2Label) p2Div.classList.add("winner");
-          m.appendChild(p2Div);
-        }
-      }
+      // Player 2 div
+      const p2Div = document.createElement("div");
+      p2Div.textContent = p2Label || "TBD";
+      p2Div.className = "player";
+      if (winnerName === p2Label) p2Div.classList.add("winner");
+      playersContainer.appendChild(p2Div);
+
+      m.appendChild(playersContainer);
 
       // Board label if assigned
       if (match.board) {
