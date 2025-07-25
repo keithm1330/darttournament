@@ -67,12 +67,11 @@
   .players {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 8px;
   }
 
   .player {
-    flex: 1;
     background: #636e72;
     padding: 8px 12px;
     border-radius: 8px;
@@ -82,6 +81,7 @@
     color: #dfe6e9;
     user-select: none;
     transition: background-color 0.3s ease;
+    min-width: 100px;
   }
 
   .player.winner {
@@ -173,28 +173,12 @@ async function loadBracket() {
   try {
     const response = await fetch('bracket.json', {cache: "no-store"});
     if (!response.ok) throw new Error("Failed to load bracket data");
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (e) {
     console.error(e);
+    document.getElementById("bracket").textContent = "Error loading bracket data.";
     return null;
   }
-}
-
-// Returns player name or "Winner of Game X" if name missing
-function getPlayerLabel(player) {
-  if (!player) return "TBD";
-
-  if (typeof player === "object" && player !== null) {
-    if (player.name && player.name.trim() !== "") {
-      return player.name;
-    } else if ("sourceMatchId" in player) {
-      return `Winner of Game ${player.sourceMatchId}`;
-    }
-    return "TBD";
-  }
-
-  return player;
 }
 
 function getRoundName(rIndex, totalRounds) {
@@ -206,85 +190,121 @@ function getRoundName(rIndex, totalRounds) {
   return `Round ${rIndex + 1}`;
 }
 
-function renderBracket(rounds) {
-  if (!rounds || !rounds.length) {
-    document.getElementById("bracket").textContent = "No bracket data found.";
-    return;
+function getPlayerName(player) {
+  if (!player) return "";
+  if (typeof player === "string") return player;
+  if (typeof player === "object" && player.name) return player.name;
+  return "";
+}
+
+function getPlayerDisplay(player, rounds) {
+  // If player is from previous match, show "Winner of game X" or real name if known
+  if (!player) return "";
+  if (typeof player === "string" && player !== "") return player;
+  if (typeof player === "object") {
+    const sourceId = player.sourceMatchId;
+    if (sourceId != null) {
+      // Find the round and match of sourceId to confirm name
+      for (const round of rounds) {
+        const foundMatch = round.find(m => m.id === sourceId);
+        if (foundMatch) {
+          if (foundMatch.winner) {
+            return foundMatch.winner;
+          } else {
+            return `Winner of game ${sourceId}`;
+          }
+        }
+      }
+      return `Winner of game ${sourceId}`;
+    }
   }
+  return "";
+}
 
-  const bracket = document.getElementById("bracket");
-  bracket.innerHTML = "";
+function render() {
+  loadBracket().then(rounds => {
+    const bracket = document.getElementById("bracket");
+    bracket.innerHTML = "";
 
-  rounds.forEach((round, rIndex) => {
-    const div = document.createElement("div");
-    div.className = "round";
+    if (!rounds) {
+      bracket.textContent = "No bracket data found.";
+      return;
+    }
 
-    div.appendChild(Object.assign(document.createElement("h4"), {
-      textContent: getRoundName(rIndex, rounds.length),
-    }));
+    rounds.forEach((round, rIndex) => {
+      const roundDiv = document.createElement("div");
+      roundDiv.className = "round";
 
-    round.forEach(match => {
-      const m = document.createElement("div");
-      m.className = "match";
+      const roundTitle = document.createElement("h4");
+      roundTitle.textContent = getRoundName(rIndex, rounds.length);
+      roundDiv.appendChild(roundTitle);
 
-      if (match.id !== undefined) {
+      round.forEach(match => {
+        const matchDiv = document.createElement("div");
+        matchDiv.className = "match";
+
+        // Game number
         const gameNum = document.createElement("div");
-        gameNum.textContent = `Game ${match.id}`;
         gameNum.className = "game-number";
-        m.appendChild(gameNum);
-      }
+        gameNum.textContent = `Game ${match.id}`;
+        matchDiv.appendChild(gameNum);
 
-      const p1Label = getPlayerLabel(match.player1);
-      const p2Label = getPlayerLabel(match.player2);
-      const winnerName = match.winner || null;
+        // Players container
+        const playersDiv = document.createElement("div");
+        playersDiv.className = "players";
 
-      const playersContainer = document.createElement("div");
-      playersContainer.className = "players";
+        const p1Name = getPlayerDisplay(match.player1, rounds);
+        const p2Name = getPlayerDisplay(match.player2, rounds);
 
-      const p1Div = document.createElement("div");
-      p1Div.textContent = p1Label;
-      p1Div.className = "player";
-      if (winnerName === p1Label) p1Div.classList.add("winner");
-      playersContainer.appendChild(p1Div);
+        // Player 1 div
+        const p1Div = document.createElement("div");
+        p1Div.className = "player";
+        if (match.winner === p1Name) p1Div.classList.add("winner");
+        p1Div.textContent = p1Name || "";
 
-      const vsDiv = document.createElement("div");
-      vsDiv.textContent = "vs";
-      vsDiv.className = "vs";
-      playersContainer.appendChild(vsDiv);
+        playersDiv.appendChild(p1Div);
 
-      const p2Div = document.createElement("div");
-      p2Div.textContent = p2Label;
-      p2Div.className = "player";
-      if (winnerName === p2Label) p2Div.classList.add("winner");
-      playersContainer.appendChild(p2Div);
+        // Only add vs and player 2 if player2 exists and is not empty string/null
+        if (p2Name && p2Name !== "") {
+          const vsDiv = document.createElement("div");
+          vsDiv.className = "vs";
+          vsDiv.textContent = "vs";
+          playersDiv.appendChild(vsDiv);
 
-      m.appendChild(playersContainer);
+          const p2Div = document.createElement("div");
+          p2Div.className = "player";
+          if (match.winner === p2Name) p2Div.classList.add("winner");
+          p2Div.textContent = p2Name;
+          playersDiv.appendChild(p2Div);
+        }
 
-      if (match.board !== null && match.board !== undefined) {
-        const bLabel = document.createElement("div");
-        bLabel.className = "board-label";
-        bLabel.textContent = `Board: ${match.board}`;
-        m.appendChild(bLabel);
-      }
+        matchDiv.appendChild(playersDiv);
 
-      if (match.marker) {
-        const markerLabel = document.createElement("div");
-        markerLabel.className = "marker-label";
-        markerLabel.textContent = `Marker: ${match.marker}`;
-        m.appendChild(markerLabel);
-      }
+        // Board label
+        if (match.board != null) {
+          const boardDiv = document.createElement("div");
+          boardDiv.className = "board-label";
+          boardDiv.textContent = `Board: ${match.board}`;
+          matchDiv.appendChild(boardDiv);
+        }
 
-      div.appendChild(m);
+        // Marker label
+        if (match.marker) {
+          const markerDiv = document.createElement("div");
+          markerDiv.className = "marker-label";
+          markerDiv.textContent = `Marker: ${match.marker}`;
+          matchDiv.appendChild(markerDiv);
+        }
+
+        roundDiv.appendChild(matchDiv);
+      });
+
+      bracket.appendChild(roundDiv);
     });
-
-    bracket.appendChild(div);
   });
 }
 
-window.onload = async () => {
-  const rounds = await loadBracket();
-  renderBracket(rounds);
-};
+window.onload = render;
 </script>
 
 </body>
