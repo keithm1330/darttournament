@@ -3,28 +3,82 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Darts Tournament Home</title>
+<title>John Power Memorial Darts Tournament</title>
 <style>
-  body { font-family: sans-serif; text-align: center; padding: 50px; background: #111; color: #eee; }
-  a { display: inline-block; margin: 20px; padding: 15px 30px; background: #d32f2f; color: white; text-decoration: none; font-weight: bold; border-radius: 8px; }
-  a:hover { background: #b71c1c; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #eee;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: #d32f2f;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .btn {
+    display: inline-block;
+    background-color: #d32f2f;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 15px 35px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.5);
+    margin: 15px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .btn:hover, .btn:focus {
+    background-color: #b71c1c;
+    box-shadow: 0 6px 14px rgba(183, 28, 28, 0.7);
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+    .btn {
+      padding: 12px 25px;
+      font-size: 1rem;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 300px;
+    }
+  }
 </style>
 </head>
 <body>
-  <h1>John Power Memorial Darts Tournament</h1>
-  <a href="admin.html" id="adminLink">Admin (Password Protected)</a>
-  <a href="view.html" target="_blank">View Public Bracket</a>
 
-  <script>
-    document.getElementById('adminLink').addEventListener('click', function(e) {
-      e.preventDefault();
-      const password = prompt('Enter admin password:');
-      if (password === 'yourStrongPassword') { // Change this password
-        window.location.href = 'admin.html';
-      } else {
-        alert('Incorrect password!');
-      }
-    });
-  </script>
+<h1>John Power Memorial Darts Tournament</h1>
+
+<a href="#" id="adminLink" class="btn" role="button" tabindex="0">Admin (Password Protected)</a>
+<a href="view.html" class="btn" role="button" tabindex="0">View Bracket</a>
+
+<script>
+document.getElementById('adminLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  const password = prompt('Enter admin password:');
+  if (password === 'kmdarts180') {
+    window.location.href = 'admin.html';
+  } else {
+    alert('Incorrect password!');
+  }
+});
+</script>
+
 </body>
 </html>
